@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRT Translator</title>
+    <style>
+        html { background-color: #f7f7f7; }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px 40px;
+            color: #222;
+            line-height: 1.5;
+            background-color: #f7f7f7;
+        }
+
+        .page {
+            width: 100%;
+        }
+
+        .hero {
+            margin-bottom: 24px;
+        }
+
+        .hero-copy {
+            margin-top: 0;
+        }
+
+        .hero-logo {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 8px;
+        }
+
+        .hero-logo img {
+            max-height: 54px;
+            max-width: 180px;
+            height: auto;
+            width: auto;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+            margin: 0 0 4px 0;
+        }
+
+        .hero p {
+            margin: 0;
+            color: #666;
+            max-width: 680px;
+        }
+
+        .layout {
+            display: grid;
+            gap: 24px;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 16px;
+        }
+
+        .panel h2 {
+            margin: 0 0 16px;
+            font-size: 18px;
+        }
+
+        form {
+            display: grid;
+            gap: 16px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 10px 0 4px;
+        }
+
+        .field input[type="file"],
+        .field input[type="text"],
+        .field input[type="number"],
+        .field select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background: #fff;
+            font: inherit;
+            color: inherit;
+        }
+
+        .field input[type="file"] {
+            padding: 8px;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            outline: none;
+            border-color: #2a6;
+            box-shadow: 0 0 0 2px rgba(34, 170, 102, 0.15);
+        }
+
+        .file-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .file-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+            gap: 12px;
+            align-items: end;
+            padding: 12px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            background: #fafafa;
+        }
+
+        .file-row .field label {
+            margin-top: 0;
+        }
+
+        .button-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: 0;
+            border-radius: 4px;
+            background: #2a6;
+            color: #fff;
+            padding: 8px 16px;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #248f5c;
+        }
+
+        .hint {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .message {
+            border-radius: 4px;
+            padding: 10px 14px;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+
+        .message.error {
+            border: 1px solid #e3b3b3;
+            background: #fff2f2;
+            color: #933;
+        }
+
+        .message.success {
+            border: 1px solid #bce;
+            background: #eef7ff;
+            color: #246;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .job-title {
+            margin: 0 0 4px;
+            font-size: 16px;
+        }
+
+        .job-subtitle {
+            margin: 0;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 28px;
+            padding: 0 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #f2f2f2;
+            color: #555;
+            white-space: nowrap;
+        }
+
+        .badge.running {
+            background: #eef7ff;
+            color: #26a;
+        }
+
+        .badge.completed {
+            background: #edf8f2;
+            color: #2a6;
+        }
+
+        .badge.failed {
+            background: #fff2f2;
+            color: #c33;
+        }
+
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 10px;
+            background: #ececec;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #2a6;
+            transition: width 0.3s ease;
+        }
+
+        .job-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin: 18px 0;
+        }
+
+        .stat {
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 12px;
+            background: #fafafa;
+        }
+
+        .stat-label {
+            display: block;
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        .log-box {
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            color: #222;
+            padding: 8px;
+            min-height: 220px;
+            max-height: 320px;
+            overflow-y: auto;
+            font-family: ui-monospace, Menlo, Consolas, monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .download-link {
+            display: inline-block;
+            margin-top: 14px;
+            color: #26a;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .download-link:hover {
+            text-decoration: underline;
+        }
+
+        .results-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .result-item {
+            display: grid;
+            gap: 6px;
+            padding: 12px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            background: #fafafa;
+        }
+
+        .result-meta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        @media (max-width: 720px) {
+            body {
+                margin: 24px auto;
+                padding: 0 14px 24px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero-logo {
+                justify-content: flex-start;
+            }
+
+            .job-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .file-row {
+                grid-template-columns: 1fr;
+            }
+
+            .job-header,
+            .progress-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="hero">
+            <div class="hero-logo" aria-label="Zibanka logo">
+                <img src="{{ url_for('asset', filename='zibanka_logo.jpeg') }}" alt="Zibanka logo">
+            </div>
+            <div class="hero-copy">
+                <h1>SRT Translator</h1>
+                <p>Upload subtitle files in .srt format, choose the source and target languages, and track live translation progress while the app batches the subtitles, sends them to Gemini, and rebuilds finished .srt outputs.</p>
+            </div>
+        </div>
+
+        <div class="layout">
+            <section class="panel">
+                <h2>Start a new job</h2>
+                <form method="post" action="{{ url_for('process') }}" enctype="multipart/form-data">
+                    <div class="file-row">
+                        <div class="field">
+                            <label for="input_lang">Input language</label>
+                            <input
+                                id="input_lang"
+                                name="input_lang"
+                                type="text"
+                                placeholder="English"
+                                required
+                            >
+                        </div>
+                        <div class="field">
+                            <label for="target_lang">Target language</label>
+                            <input
+                                id="target_lang"
+                                name="target_lang"
+                                type="text"
+                                placeholder="German"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="file-grid">
+                        {% for index in range(1, 4) %}
+                        <div class="file-row">
+                            <div class="field">
+                                <label for="srt_file_{{ index }}">SRT file {{ index }}</label>
+                                <input id="srt_file_{{ index }}" name="srt_file_{{ index }}" type="file" accept=".srt">
+                            </div>
+                            <div class="field">
+                                <label for="output_file_name_{{ index }}">Output file name {{ index }}</label>
+                                <input
+                                    id="output_file_name_{{ index }}"
+                                    name="output_file_name_{{ index }}"
+                                    type="text"
+                                    placeholder="episode_{{ index }}_translated"
+                                >
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="field">
+                        <label for="batch_size">Batch size</label>
+                        <input id="batch_size" name="batch_size" type="number" min="1" max="100" step="1" value="50" required>
+                    </div>
+
+                    <div class="button-row">
+                        <button type="submit">Process</button>
+                        <span class="hint">Enter the source and target languages once per run. Upload up to 3 .srt files, add one output filename per file, and choose a batch size from 1 to 100 subtitle rows per Gemini request.</span>
+                    </div>
+                </form>
+
+                {% if form_error %}
+                <div class="message error">{{ form_error }}</div>
+                {% endif %}
+
+                {% if started %}
+                <div class="message success">Processing has started. You can stay on this page and follow the progress below.</div>
+                {% endif %}
+            </section>
+
+            {% if active_job %}
+            <section class="panel" id="job-panel" data-job-id="{{ active_job.id }}">
+                <div class="job-header">
+                    <div>
+                        <h2 class="job-title" id="job-title">{{ active_job.current_file_name or active_job.title }}</h2>
+                        <p class="job-subtitle" id="job-message">{{ active_job.message }}</p>
+                    </div>
+                    <span class="badge {{ active_job.status }}" id="job-status">{{ active_job.status|capitalize }}</span>
+                </div>
+
+                <div class="progress-meta">
+                    <span id="job-file-progress">
+                        {% if active_job.current_file_number %}
+                        File {{ active_job.current_file_number }} of {{ active_job.total_files }}
+                        {% else %}
+                        Waiting to start
+                        {% endif %}
+                    </span>
+                    <span id="job-batches">
+                        {% if active_job.total_batches %}
+                        Batch {{ active_job.current_batch }} of {{ active_job.total_batches }}
+                        {% else %}
+                        Waiting for batch count
+                        {% endif %}
+                    </span>
+                    <strong id="job-progress-label">{{ active_job.progress }}%</strong>
+                </div>
+
+                <div class="progress-track" aria-hidden="true">
+                    <div
+                        class="progress-fill"
+                        id="job-progress-bar"
+                        data-progress="{{ active_job.progress }}"
+                    ></div>
+                </div>
+
+                <div class="job-grid">
+                    <div class="stat">
+                        <span class="stat-label">Input language</span>
+                        <span class="stat-value" id="job-input-lang">{{ active_job.input_lang }}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Target language</span>
+                        <span class="stat-value" id="job-target-lang">{{ active_job.target_lang }}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Current state</span>
+                        <span class="stat-value" id="job-state">{{ active_job.status|capitalize }}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Current file</span>
+                        <span class="stat-value" id="job-current-file">{{ active_job.current_file_name or "Waiting to start" }}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Current output</span>
+                        <span class="stat-value" id="job-output-file">{{ active_job.current_output_file_name or "Waiting to start" }}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Batch size</span>
+                        <span class="stat-value" id="job-batch-size">{{ active_job.batch_size }}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Total files</span>
+                        <span class="stat-value" id="job-total-files">{{ active_job.total_files }}</span>
+                    </div>
+                </div>
+
+                <h2>Processing log</h2>
+                <div class="log-box" id="job-logs">{% for line in active_job.logs %}{{ line }}
+{% endfor %}</div>
+
+                <div class="message error" id="job-error" {% if not active_job.error %}style="display:none;"{% endif %}>
+                    {{ active_job.error or "" }}
+                </div>
+
+                <h2>Files</h2>
+                <div class="results-list" id="job-files">
+                    {% for file_job in active_job.files %}
+                    <div class="result-item">
+                        <strong>{{ file_job.filename }}</strong>
+                        <div class="result-meta">
+                            <span>Requested output: {{ file_job.requested_output_file_name }}</span>
+                            <span>Status: {{ file_job.status|capitalize }}</span>
+                        </div>
+                        {% if file_job.download_name %}
+                        <a class="download-link" href="{{ url_for('download_file', filename=file_job.download_name) }}">Download {{ file_job.output_file_name }}</a>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+        </div>
+
+        <section class="panel">
+            <h2>Developer Notes</h2>
+            <ul>
+                <li>[STATUS]: first deploy</li>
+                <li>Branched from: zibanka/srt_german</li>
+                <li>Input type: up to 3 .srt subtitle files</li>
+                <li>Output type: translated .srt files</li>
+                <li>Flow: SRT -> batches -> Gemini JSON -> rebuilt SRT</li>
+                <li>Changes: removed character lists</li>
+                <li>Changes: added user inputs for language source and target</li>
+                <li>Status panel: shows file progress, batch progress, output name, and processing log</li>
+                <li>Status values: queued = waiting, running = sending batches to Gemini, completed = files ready, failed = check log/error</li>
+            </ul>
+        </section>
+    </div>
+
+    {% if active_job %}
+    <script>
+        (function () {
+            const panel = document.getElementById("job-panel");
+            if (!panel) return;
+
+            const jobId = panel.dataset.jobId;
+            const titleEl = document.getElementById("job-title");
+            const statusEl = document.getElementById("job-status");
+            const messageEl = document.getElementById("job-message");
+            const fileProgressEl = document.getElementById("job-file-progress");
+            const batchesEl = document.getElementById("job-batches");
+            const progressLabelEl = document.getElementById("job-progress-label");
+            const progressBarEl = document.getElementById("job-progress-bar");
+            const inputLangEl = document.getElementById("job-input-lang");
+            const targetLangEl = document.getElementById("job-target-lang");
+            const stateEl = document.getElementById("job-state");
+            const currentFileEl = document.getElementById("job-current-file");
+            const outputFileEl = document.getElementById("job-output-file");
+            const batchSizeEl = document.getElementById("job-batch-size");
+            const logsEl = document.getElementById("job-logs");
+            const errorEl = document.getElementById("job-error");
+            const filesEl = document.getElementById("job-files");
+
+            function escapeHtml(value) {
+                return String(value || "")
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#39;");
+            }
+
+            if (progressBarEl) {
+                progressBarEl.style.width = `${progressBarEl.dataset.progress || 0}%`;
+            }
+
+            function renderJob(job) {
+                titleEl.textContent = job.current_file_name || job.title || "SRT Translator";
+                statusEl.textContent = job.status.charAt(0).toUpperCase() + job.status.slice(1);
+                statusEl.className = "badge " + job.status;
+                messageEl.textContent = job.message || "";
+                if (inputLangEl) {
+                    inputLangEl.textContent = job.input_lang || "";
+                }
+                if (targetLangEl) {
+                    targetLangEl.textContent = job.target_lang || "";
+                }
+                stateEl.textContent = job.status.charAt(0).toUpperCase() + job.status.slice(1);
+                if (currentFileEl) {
+                    currentFileEl.textContent = job.current_file_name || "Waiting to start";
+                }
+                if (outputFileEl) {
+                    outputFileEl.textContent = job.current_output_file_name || "Waiting to start";
+                }
+                if (batchSizeEl) {
+                    batchSizeEl.textContent = job.batch_size || "";
+                }
+                progressLabelEl.textContent = `${job.progress}%`;
+                progressBarEl.style.width = `${job.progress}%`;
+
+                if (job.current_file_number) {
+                    fileProgressEl.textContent = `File ${job.current_file_number} of ${job.total_files}`;
+                } else {
+                    fileProgressEl.textContent = "Waiting to start";
+                }
+
+                if (job.total_batches) {
+                    batchesEl.textContent = `Batch ${job.current_batch} of ${job.total_batches}`;
+                } else {
+                    batchesEl.textContent = "Waiting for batch count";
+                }
+
+                logsEl.textContent = (job.logs || []).join("\n");
+                logsEl.scrollTop = logsEl.scrollHeight;
+
+                if (job.error) {
+                    errorEl.style.display = "block";
+                    errorEl.textContent = job.error;
+                } else {
+                    errorEl.style.display = "none";
+                    errorEl.textContent = "";
+                }
+
+                filesEl.innerHTML = (job.files || []).map((fileJob) => {
+                    const downloadLink = fileJob.download_url
+                        ? `<a class="download-link" href="${escapeHtml(fileJob.download_url)}">Download ${escapeHtml(fileJob.output_file_name || fileJob.requested_output_file_name)}</a>`
+                        : "";
+
+                    return `
+                        <div class="result-item">
+                            <strong>${escapeHtml(fileJob.filename)}</strong>
+                            <div class="result-meta">
+                                <span>Requested output: ${escapeHtml(fileJob.requested_output_file_name)}</span>
+                                <span>Status: ${escapeHtml(fileJob.status.charAt(0).toUpperCase() + fileJob.status.slice(1))}</span>
+                            </div>
+                            ${downloadLink}
+                        </div>
+                    `;
+                }).join("");
+            }
+
+            function poll() {
+                fetch(`/status/${jobId}`)
+                    .then((response) => response.json())
+                    .then((job) => {
+                        renderJob(job);
+                        if (job.status === "running" || job.status === "queued") {
+                            window.setTimeout(poll, 1500);
+                        }
+                    })
+                    .catch(() => {
+                        window.setTimeout(poll, 2500);
+                    });
+            }
+
+            poll();
+        }());
+    </script>
+    {% endif %}
+</body>
+</html>
