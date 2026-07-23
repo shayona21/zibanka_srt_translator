@@ -1,10 +1,23 @@
-cat > .gitignore << 'EOF'
+# Virtual environment
+german/venv/
 venv/
+
+# Python cache
 __pycache__/
 *.pyc
+german/__pycache__/
+
+# Generated/uploaded files - don't need to be in git
+german/output/
+german/uploads/
+malay/output/
+malay/uploads/
+malay/__pycache__/
+malay/tests/__pycache__/
+
+# OS junk file
+.DS_Store
+
+# Safety net in case any env/key files get added later
 .env
-*.json
-!requirements.txt
-output/
-downloads/
-EOF
+*.env

@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English to Malay Subtitle Translator</title>
+    <style>
+        :root {
+            --ink: #17231d;
+            --muted: #647169;
+            --line: #dce5df;
+            --surface: #ffffff;
+            --soft: #f2f7f4;
+            --brand: #168052;
+            --brand-dark: #0f6841;
+            --brand-pale: #e8f6ef;
+            --blue-pale: #eef6ff;
+            --danger: #a33b3b;
+            --danger-pale: #fff2f1;
+            --shadow: 0 18px 50px rgba(23, 35, 29, 0.08);
+        }
+
+        * { box-sizing: border-box; }
+
+        html {
+            min-height: 100%;
+            background: #eef3ef;
+        }
+
+        body {
+            margin: 0;
+            color: var(--ink);
+            font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            line-height: 1.5;
+            background:
+                radial-gradient(circle at top left, rgba(22, 128, 82, 0.10), transparent 34rem),
+                #f7f9f7;
+        }
+
+        button, input { font: inherit; }
+
+        .shell {
+            width: min(1080px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 28px 0 56px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 54px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand img {
+            display: block;
+            max-width: 150px;
+            max-height: 48px;
+            width: auto;
+            height: auto;
+        }
+
+        .brand-divider {
+            width: 1px;
+            height: 30px;
+            background: var(--line);
+        }
+
+        .brand-label {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .language-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 13px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            color: #3e4c44;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .language-pill span {
+            color: var(--brand);
+            font-size: 17px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(260px, 0.7fr);
+            gap: 54px;
+            align-items: end;
+            margin-bottom: 36px;
+        }
+
+        .eyebrow {
+            margin: 0 0 10px;
+            color: var(--brand);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            max-width: 720px;
+            margin: 0;
+            font-size: clamp(38px, 6vw, 66px);
+            line-height: 1.02;
+            letter-spacing: -0.045em;
+        }
+
+        .hero-copy {
+            margin: 20px 0 0;
+            max-width: 690px;
+            color: var(--muted);
+            font-size: 17px;
+        }
+
+        .workflow-note {
+            padding: 20px;
+            border: 1px solid rgba(22, 128, 82, 0.18);
+            border-radius: 18px;
+            background: var(--brand-pale);
+        }
+
+        .workflow-note strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .workflow-note p {
+            margin: 0;
+            color: #486158;
+            font-size: 13px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        .card {
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            align-items: flex-start;
+            padding: 25px 28px 20px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .card-header h2 {
+            margin: 0 0 4px;
+            font-size: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .card-header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .step {
+            display: grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            flex: 0 0 auto;
+            border-radius: 50%;
+            color: var(--brand);
+            background: var(--brand-pale);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        form { padding: 28px; }
+
+        .form-section + .form-section {
+            margin-top: 30px;
+            padding-top: 28px;
+            border-top: 1px solid var(--line);
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 16px;
+        }
+
+        .section-heading h3 {
+            margin: 0 0 3px;
+            font-size: 16px;
+        }
+
+        .section-heading p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .required {
+            color: var(--brand);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .fields {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .field.full { grid-column: 1 / -1; }
+
+        .field label {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 750;
+        }
+
+        .optional {
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .file-input {
+            position: relative;
+            min-height: 96px;
+            padding: 18px;
+            border: 1.5px dashed #b9cbc0;
+            border-radius: 14px;
+            background: var(--soft);
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .file-input:hover,
+        .file-input:focus-within {
+            border-color: var(--brand);
+            background: var(--brand-pale);
+        }
+
+        .file-input input {
+            width: 100%;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .file-input input::file-selector-button {
+            margin-right: 12px;
+            padding: 8px 12px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            color: var(--ink);
+            background: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .file-summary {
+            min-height: 18px;
+            margin: 10px 0 0;
+            color: var(--brand-dark);
+            font-size: 12px;
+            font-weight: 650;
+        }
+
+        .process-strip {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-top: 28px;
+            padding: 18px;
+            border-radius: 15px;
+            background: #17231d;
+        }
+
+        .process-strip p {
+            margin: 0;
+            color: #c7d2cb;
+            font-size: 13px;
+        }
+
+        .process-strip strong {
+            display: block;
+            margin-bottom: 2px;
+            color: white;
+        }
+
+        .button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 46px;
+            padding: 0 21px;
+            border: 0;
+            border-radius: 11px;
+            color: white;
+            background: var(--brand);
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.15s, background 0.15s;
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+            background: #1a9360;
+        }
+
+        .message {
+            margin: 0 28px 28px;
+            padding: 12px 15px;
+            border-radius: 11px;
+            font-size: 13px;
+        }
+
+        .message.error {
+            border: 1px solid #f0c6c2;
+            color: var(--danger);
+            background: var(--danger-pale);
+        }
+
+        .message.success {
+            border: 1px solid #bcdcca;
+            color: var(--brand-dark);
+            background: var(--brand-pale);
+        }
+
+        .job-body { padding: 28px; }
+
+        .job-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 22px;
+        }
+
+        .job-heading h3 {
+            margin: 0 0 4px;
+            font-size: 18px;
+        }
+
+        .job-heading p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 30px;
+            padding: 0 11px;
+            border-radius: 999px;
+            color: #5d675f;
+            background: #eef1ef;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .badge.running {
+            color: #24649c;
+            background: var(--blue-pale);
+        }
+
+        .badge.completed {
+            color: var(--brand-dark);
+            background: var(--brand-pale);
+        }
+
+        .badge.failed {
+            color: var(--danger);
+            background: var(--danger-pale);
+        }
+
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 9px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .progress-meta strong { color: var(--ink); }
+
+        .progress-track {
+            height: 10px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: #e9eeeb;
+        }
+
+        .progress-fill {
+            width: 0;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--brand), #48ad79);
+            transition: width 0.35s ease;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            margin: 22px 0;
+        }
+
+        .stat {
+            min-height: 84px;
+            padding: 13px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--soft);
+        }
+
+        .stat span {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .stat strong {
+            display: block;
+            overflow-wrap: anywhere;
+            font-size: 13px;
+        }
+
+        .results {
+            display: grid;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+        }
+
+        .result strong {
+            display: block;
+            margin-bottom: 2px;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .result span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .download {
+            flex: 0 0 auto;
+            color: var(--brand-dark);
+            font-size: 13px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .download:hover { text-decoration: underline; }
+
+        details { margin-top: 22px; }
+
+        summary {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .log {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-top: 10px;
+            padding: 13px;
+            border-radius: 10px;
+            color: #dfe8e2;
+            background: #17231d;
+            font: 11px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace;
+            white-space: pre-wrap;
+        }
+
+        .how-it-works {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            padding: 28px;
+        }
+
+        .how-it-works article {
+            padding: 18px;
+            border-radius: 14px;
+            background: var(--soft);
+        }
+
+        .how-it-works b {
+            display: block;
+            margin-bottom: 7px;
+            color: var(--brand);
+            font-size: 12px;
+        }
+
+        .how-it-works h3 {
+            margin: 0 0 6px;
+            font-size: 15px;
+        }
+
+        .how-it-works p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        @media (max-width: 780px) {
+            .shell { width: min(100% - 22px, 1080px); }
+            .topbar { margin-bottom: 38px; }
+            .brand-divider, .brand-label { display: none; }
+            .hero { grid-template-columns: 1fr; gap: 24px; }
+            .fields, .stats, .how-it-works { grid-template-columns: 1fr; }
+            .process-strip, .result { align-items: stretch; flex-direction: column; }
+            .button { width: 100%; }
+        }
+
+        @media (max-width: 480px) {
+            .shell { padding-top: 18px; }
+            .language-pill { display: none; }
+            .card-header, form, .job-body, .how-it-works { padding: 20px; }
+            .message { margin: 0 20px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <main class="shell">
+        <header class="topbar">
+            <div class="brand">
+                <img src="{{ url_for('asset', filename='zibanka_logo.jpeg') }}" alt="Zibanka">
+                <span class="brand-divider" aria-hidden="true"></span>
+                <span class="brand-label">Subtitle Studio</span>
+            </div>
+            <div class="language-pill">English <span aria-hidden="true">→</span> Bahasa Melayu</div>
+        </header>
+
+        <section class="hero">
+            <div>
+                <p class="eyebrow">Malaysian to Malay translation with context</p>
+                <h1>Malay Excel Translation</h1>
+                <p class="hero-copy">Upload English subtitle Excel workbooks with the character guide for the show. The translator preserves the original Excel layout and adds a Malay translation beside every dialogue row.</p>
+            </div>
+            <aside class="workflow-note">
+                <strong>Your workbook stays whole.</strong>
+                <p>Rows are sent to Gemini in batches of 50 with nearby dialogue for continuity. Only the finished Malay column is added to the original file.</p>
+            </aside>
+        </section>
+
+        <div class="grid">
+            <section class="card">
+                <div class="card-header">
+                    <div>
+                        <h2>New translation job</h2>
+                        <p>Shared supporting documents apply to every workbook in this job.</p>
+                    </div>
+                    <span class="step">01</span>
+                </div>
+
+                <form method="post" action="{{ url_for('process') }}" enctype="multipart/form-data">
+                    <div class="form-section">
+                        <div class="section-heading">
+                            <div>
+                                <h3>English subtitle workbooks</h3>
+                                <p>Select one or several files using the seven-column subtitle layout.</p>
+                            </div>
+                            <span class="required">Required</span>
+                        </div>
+                        <div class="field full">
+                            <label for="subtitle_files">Excel files <span class="optional">Up to 10 files</span></label>
+                            <div class="file-input">
+                                <input id="subtitle_files" name="subtitle_files" type="file" accept=".xlsx" multiple required>
+                                <p class="file-summary" id="subtitle-summary">No workbooks selected</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="section-heading">
+                            <div>
+                                <h3>Story and character context</h3>
+                                <p>Gemini uses these references for relationships, addressal, and continuity.</p>
+                            </div>
+                        </div>
+                        <div class="fields">
+                            <div class="field full">
+                                <label for="character_list">Character list <span class="required">Required</span></label>
+                                <div class="file-input">
+                                    <input id="character_list" name="character_list" type="file" accept=".xlsx" required>
+                                    <p class="file-summary">Excel (.xlsx)</p>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label for="episode_synopsis">Episode synopsis <span class="optional">Optional</span></label>
+                                <div class="file-input">
+                                    <input id="episode_synopsis" name="episode_synopsis" type="file" accept=".docx,.txt">
+                                    <p class="file-summary">Word or text file</p>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label for="series_synopsis">Series synopsis <span class="optional">Optional</span></label>
+                                <div class="file-input">
+                                    <input id="series_synopsis" name="series_synopsis" type="file" accept=".docx,.txt">
+                                    <p class="file-summary">Word or text file</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="process-strip">
+                        <p><strong>Excel in → Excel out</strong>Fixed 50-row batches · Malaysian Malay · original formatting retained</p>
+                        <button class="button" type="submit">Start translation</button>
+                    </div>
+                </form>
+
+                {% if form_error %}
+                <div class="message error" role="alert">{{ form_error }}</div>
+                {% endif %}
+                {% if started %}
+                <div class="message success" role="status">Translation has started. Progress will update below automatically.</div>
+                {% endif %}
+            </section>
+
+            {% if active_job %}
+            <section class="card" id="job-panel" data-job-id="{{ active_job.id }}">
+                <div class="card-header">
+                    <div>
+                        <h2>Translation progress</h2>
+                        <p>Keep this page open while the workbooks are processed.</p>
+                    </div>
+                    <span class="step">02</span>
+                </div>
+                <div class="job-body">
+                    <div class="job-heading">
+                        <div>
+                            <h3 id="job-title">{{ active_job.current_file_name or active_job.title }}</h3>
+                            <p id="job-message">{{ active_job.message }}</p>
+                        </div>
+                        <span class="badge {{ active_job.status }}" id="job-status">{{ active_job.status|capitalize }}</span>
+                    </div>
+
+                    <div class="progress-meta">
+                        <span id="job-file-progress">
+                            {% if active_job.current_file_number %}
+                            Workbook {{ active_job.current_file_number }} of {{ active_job.total_files }}
+                            {% else %}
+                            Waiting to start
+                            {% endif %}
+                        </span>
+                        <span id="job-batches">
+                            {% if active_job.total_batches %}
+                            Batch {{ active_job.current_batch }} of {{ active_job.total_batches }}
+                            {% else %}
+                            Preparing batches
+                            {% endif %}
+                        </span>
+                        <strong id="job-progress-label">{{ active_job.progress }}%</strong>
+                    </div>
+                    <div class="progress-track" aria-hidden="true">
+                        <div class="progress-fill" id="job-progress-bar" data-progress="{{ active_job.progress }}"></div>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat">
+                            <span>Language</span>
+                            <strong>English → Malaysian Malay</strong>
+                        </div>
+                        <div class="stat">
+                            <span>Current workbook</span>
+                            <strong id="job-current-file">{{ active_job.current_file_name or "Waiting to start" }}</strong>
+                        </div>
+                        <div class="stat">
+                            <span>Batch size</span>
+                            <strong id="job-batch-size">{{ active_job.batch_size }} rows</strong>
+                        </div>
+                        <div class="stat">
+                            <span>Total workbooks</span>
+                            <strong id="job-total-files">{{ active_job.total_files }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="message error" id="job-error" {% if not active_job.error %}hidden{% endif %}>
+                        {{ active_job.error or "" }}
+                    </div>
+
+                    <div class="results" id="job-files">
+                        {% for file_job in active_job.files %}
+                        <div class="result">
+                            <div>
+                                <strong>{{ file_job.filename }}</strong>
+                                <span>{{ file_job.status|capitalize }} · Output: {{ file_job.requested_output_file_name }}</span>
+                            </div>
+                            {% if file_job.output_path %}
+                            <a class="download" href="{{ url_for('download_file', job_id=active_job.id, filename=file_job.output_file_name) }}">Download Excel</a>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <details>
+                        <summary>Show processing log</summary>
+                        <div class="log" id="job-logs">{% for line in active_job.logs %}{{ line }}
+{% endfor %}</div>
+                    </details>
+                </div>
+            </section>
+            {% endif %}
+
+            <section class="card">
+                <div class="card-header">
+                    <div>
+                        <h2>How the translation is built</h2>
+                        <p>Designed around the Mannat Excel workflow.</p>
+                    </div>
+                </div>
+                <div class="how-it-works">
+                    <article>
+                        <b>01 · Read</b>
+                        <h3>Understands all seven columns</h3>
+                        <p>Serial number, timecodes, speakers, receivers, screenplay notes, and English dialogue stay associated.</p>
+                    </article>
+                    <article>
+                        <b>02 · Translate</b>
+                        <h3>Maintains sentence continuity</h3>
+                        <p>Each 50-row batch receives surrounding dialogue and the uploaded character and story references.</p>
+                    </article>
+                    <article>
+                        <b>03 · Deliver</b>
+                        <h3>Preserves the source workbook</h3>
+                        <p>A MALAY TRANSLATION column is added while worksheet names, source cells, styling, and order remain intact.</p>
+                    </article>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        (function () {
+            const subtitleInput = document.getElementById("subtitle_files");
+            const subtitleSummary = document.getElementById("subtitle-summary");
+
+            if (subtitleInput && subtitleSummary) {
+                subtitleInput.addEventListener("change", function () {
+                    const files = Array.from(subtitleInput.files || []);
+                    if (!files.length) {
+                        subtitleSummary.textContent = "No workbooks selected";
+                    } else if (files.length === 1) {
+                        subtitleSummary.textContent = files[0].name;
+                    } else {
+                        subtitleSummary.textContent = `${files.length} workbooks selected`;
+                    }
+                });
+            }
+
+            const panel = document.getElementById("job-panel");
+            if (!panel) return;
+
+            const jobId = panel.dataset.jobId;
+            const titleEl = document.getElementById("job-title");
+            const statusEl = document.getElementById("job-status");
+            const messageEl = document.getElementById("job-message");
+            const fileProgressEl = document.getElementById("job-file-progress");
+            const batchesEl = document.getElementById("job-batches");
+            const progressLabelEl = document.getElementById("job-progress-label");
+            const progressBarEl = document.getElementById("job-progress-bar");
+            const currentFileEl = document.getElementById("job-current-file");
+            const batchSizeEl = document.getElementById("job-batch-size");
+            const totalFilesEl = document.getElementById("job-total-files");
+            const logsEl = document.getElementById("job-logs");
+            const errorEl = document.getElementById("job-error");
+            const filesEl = document.getElementById("job-files");
+
+            function escapeHtml(value) {
+                return String(value || "")
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#39;");
+            }
+
+            progressBarEl.style.width = `${progressBarEl.dataset.progress || 0}%`;
+
+            function renderJob(job) {
+                const statusLabel = job.status.charAt(0).toUpperCase() + job.status.slice(1);
+                titleEl.textContent = job.current_file_name || job.title;
+                statusEl.textContent = statusLabel;
+                statusEl.className = "badge " + job.status;
+                messageEl.textContent = job.message || "";
+                currentFileEl.textContent = job.current_file_name || "Waiting to start";
+                batchSizeEl.textContent = `${job.batch_size} rows`;
+                totalFilesEl.textContent = job.total_files;
+                progressLabelEl.textContent = `${job.progress}%`;
+                progressBarEl.style.width = `${job.progress}%`;
+                fileProgressEl.textContent = job.current_file_number
+                    ? `Workbook ${job.current_file_number} of ${job.total_files}`
+                    : "Waiting to start";
+                batchesEl.textContent = job.total_batches
+                    ? `Batch ${job.current_batch} of ${job.total_batches}`
+                    : "Preparing batches";
+
+                logsEl.textContent = (job.logs || []).join("\n");
+                logsEl.scrollTop = logsEl.scrollHeight;
+
+                if (job.error) {
+                    errorEl.hidden = false;
+                    errorEl.textContent = job.error;
+                } else {
+                    errorEl.hidden = true;
+                    errorEl.textContent = "";
+                }
+
+                filesEl.innerHTML = (job.files || []).map(function (fileJob) {
+                    const status = fileJob.status.charAt(0).toUpperCase() + fileJob.status.slice(1);
+                    const link = fileJob.download_url
+                        ? `<a class="download" href="${escapeHtml(fileJob.download_url)}">Download Excel</a>`
+                        : "";
+                    return `
+                        <div class="result">
+                            <div>
+                                <strong>${escapeHtml(fileJob.filename)}</strong>
+                                <span>${escapeHtml(status)} · Output: ${escapeHtml(fileJob.requested_output_file_name)}</span>
+                            </div>
+                            ${link}
+                        </div>
+                    `;
+                }).join("");
+            }
+
+            function poll() {
+                fetch(`/status/${jobId}`)
+                    .then(function (response) {
+                        if (!response.ok) throw new Error("Status request failed");
+                        return response.json();
+                    })
+                    .then(function (job) {
+                        renderJob(job);
+                        if (job.status === "running" || job.status === "queued") {
+                            window.setTimeout(poll, 1500);
+                        }
+                    })
+                    .catch(function () {
+                        window.setTimeout(poll, 2500);
+                    });
+            }
+
+            poll();
+        }());
+    </script>
+</body>
+</html>
