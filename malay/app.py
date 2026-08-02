@@ -443,6 +443,10 @@ def download_file(job_id, filename):
     return send_file(file_path, as_attachment=True, download_name=file_path.name)
 
 
+#if __name__ == "__main__":
+#    port = int(os.environ.get("PORT", "5040"))
+#    app.run(debug=False, port=port)
+
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", "5040"))
-    app.run(debug=False, port=port)
+    app.run(host="0.0.0.0", port=5040)
+
