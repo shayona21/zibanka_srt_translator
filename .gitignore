@@ -21,3 +21,7 @@ malay/tests/__pycache__/
 # Safety net in case any env/key files get added later
 .env
 *.env
+
+# French generated/uploaded files
+french/output/
+french/uploads/
